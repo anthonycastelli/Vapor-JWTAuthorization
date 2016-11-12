@@ -1,3 +1,11 @@
+//
+//  User.swift
+//  JWTAuthentication
+//
+//  Created by Anthony Castelli on 11/12/16.
+//
+//
+
 import Vapor
 import Fluent
 import Foundation
