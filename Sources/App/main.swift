@@ -8,6 +8,4 @@ drop.get { req in
     ])
 }
 
-drop.resource("posts", PostController())
-
 drop.run()
