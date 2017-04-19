@@ -17,18 +17,7 @@ class BearerAuthMiddleware: Middleware {
 
         // Authorization: Bearer Token
         if let bearer = request.auth.header?.bearer {
-            // Verify the token
-            let receivedJWT = try JWT(token: bearer.string)
-
-            // Verify the signature
-            try receivedJWT.verifySignature(using: HS256(key: Authentication.AccessTokenSigningKey.makeBytes()))
-
-            // Valide it's time stamp
-            if receivedJWT.verifyClaims([ExpirationTimeClaim(Seconds(Authentication.Length))]) { //ExpirationTimeClaim(Authentication.AccesTokenValidationLength)
-                try request.auth.login(bearer)
-            } else {
-                throw Abort.custom(status: .unauthorized, message: "Please reauthenticate with the server.")
-            }
+            try request.auth.login(bearer)
         }
 
         return try next.respond(to: request)
