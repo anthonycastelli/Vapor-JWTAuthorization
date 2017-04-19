@@ -32,6 +32,7 @@ final class UsersController {
             try _ = User.register(credentials: credentials)
             try request.auth.login(credentials)
             
+            // Get the current signed-in user's ID
             guard let user = try? request.user(), let userId = user.id?.int else {
                 throw Abort.custom(status: .unauthorized, message: "Please re authenticate")
             }
@@ -56,6 +57,7 @@ final class UsersController {
         do {
             try request.auth.login(credentials)
             
+            // Get the current signed-in user's ID
             guard let user = try? request.user(), let userId = user.id?.int else {
                 throw Abort.custom(status: .unauthorized, message: "Please re authenticate")
             }
