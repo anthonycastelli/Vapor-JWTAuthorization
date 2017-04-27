@@ -17,7 +17,7 @@ import Core
 
 struct Authentication {
     static let AccessTokenSigningKey = "CHANGE_ME"
-    static let Length = 60 * 5 // 5 Minutes later
+    static let Length: Double = 60 * 5 // 5 Minutes later
 }
 
 final class User: Auth.User {
@@ -62,7 +62,7 @@ extension User {
 
             // Verify the token
             try receivedJWT.verifySignature(using: HS256(key: Authentication.AccessTokenSigningKey.makeBytes()))
-            if receivedJWT.verifyClaims([ExpirationTimeClaim(Seconds(Authentication.Length))]) {
+            if receivedJWT.verifyClaims([ExpirationTimeClaim(Date() + Authentication.Length)]) {
                 guard let userId = receivedJWT.payload.object?[SubjectClaim.name]?.string else { throw IncorrectCredentialsError() }
                 user = try User.query().filter("id", userId).first()
             } else {

@@ -38,7 +38,7 @@ final class UsersController {
             }
             
             // Gernare our token with the User ID
-            let payload = Node([ExpirationTimeClaim(Seconds(Authentication.Length)), SubjectClaim("\(userId)")])
+            let payload = Node([ExpirationTimeClaim(Date() + Authentication.Length), SubjectClaim("\(userId)")])
             let jwt = try JWT(payload: payload, signer: HS256(key: Authentication.AccessTokenSigningKey.makeBytes()))
             
             return try JSON(node: ["success": true, "user": request.user().makeNode(), "token": jwt.createToken()])
@@ -63,7 +63,7 @@ final class UsersController {
             }
             
             // Gernare our token with the User ID
-            let payload = Node([ExpirationTimeClaim(Seconds(Authentication.Length)), SubjectClaim("\(userId)")])
+            let payload = Node([ExpirationTimeClaim(Date() + Authentication.Length), SubjectClaim("\(userId)")])
             let jwt = try JWT(payload: payload, signer: HS256(key: Authentication.AccessTokenSigningKey.makeBytes()))
             
             return try JSON(node: ["success": true, "user": request.user().makeNode(), "token": jwt.createToken()])
