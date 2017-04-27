@@ -62,7 +62,7 @@ extension User {
 
             // Verify the token
             try receivedJWT.verifySignature(using: HS256(key: Authentication.AccessTokenSigningKey.makeBytes()))
-            if receivedJWT.verifyClaims([ExpirationTimeClaim(Date() + Authentication.Length)]) {
+            if receivedJWT.verifyClaims([ExpirationTimeClaim(Date())]) {
                 guard let userId = receivedJWT.payload.object?[SubjectClaim.name]?.string else { throw IncorrectCredentialsError() }
                 user = try User.query().filter("id", userId).first()
             } else {
