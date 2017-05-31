@@ -67,6 +67,8 @@ final class UserController {
         return try request.user()
     }
     
+    // MARK: JWT Token Generation 
+    
     func generateJWTToken(_ userId: Int) throws -> String {
         let time = ExpirationTimeClaim(date: Date().addingTimeInterval(60 * 5)) // 5 minutes
         let payload: [Claim] = [time, SubjectClaim(string: "\(userId)")]
