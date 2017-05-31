@@ -2,6 +2,18 @@
   "autoPin": true,
   "pins": [
     {
+      "package": "Auth",
+      "reason": null,
+      "repositoryURL": "https://github.com/vapor/auth.git",
+      "version": "1.0.0"
+    },
+    {
+      "package": "AuthProvider",
+      "reason": null,
+      "repositoryURL": "https://github.com/vapor/auth-provider.git",
+      "version": "1.0.2"
+    },
+    {
       "package": "BCrypt",
       "reason": null,
       "repositoryURL": "https://github.com/vapor/bcrypt.git",
@@ -66,6 +78,12 @@
       "reason": null,
       "repositoryURL": "https://github.com/vapor/json.git",
       "version": "2.0.2"
+    },
+    {
+      "package": "JWT",
+      "reason": null,
+      "repositoryURL": "https://github.com/vapor/jwt.git",
+      "version": "2.1.0"
     },
     {
       "package": "Multipart",
