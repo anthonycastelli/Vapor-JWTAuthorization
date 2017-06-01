@@ -139,18 +139,31 @@ extension User: TokenAuthenticatable {
 }
 
 
-extension SubjectClaim: JSONInitializable {
-    public init(json: JSON) throws {
-        guard let value = try json.get(SubjectClaim.name) as String? else {
+class Claims: JSONInitializable {
+    var subjectClaimValue : String
+    var expirationTimeClaimValue : Double
+    public required init(json: JSON) throws {
+        guard let subjectClaimValue = try json.get(SubjectClaim.name) as String? else {
             throw AuthenticationError.invalidCredentials
         }
-        self.value = value
+        self.subjectClaimValue = subjectClaimValue
+        
+        guard let expirationTimeClaimValue = try json.get(ExpirationTimeClaim.name) as String? else {
+            throw AuthenticationError.invalidCredentials
+        }
+        self.expirationTimeClaimValue = Double(expirationTimeClaimValue)!
+        
     }
 }
+
 extension User: PayloadAuthenticatable {
-    typealias PayloadType = SubjectClaim
-    static func authenticate(_ payload: SubjectClaim) throws -> User {
-        let userId = payload.value
+    typealias PayloadType = Claims
+    static func authenticate(_ payload: Claims) throws -> User {
+        if payload.expirationTimeClaimValue < Date().timeIntervalSince1970 {
+            throw AuthenticationError.invalidCredentials
+        }
+        
+        let userId = payload.subjectClaimValue
         guard let user = try User.makeQuery()
             .filter(idKey, userId)
             .first()

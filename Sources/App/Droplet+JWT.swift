@@ -10,8 +10,12 @@ extension Droplet {
             throw Abort.unauthorized
         }
         
-        let timeToLive = Seconds(5 * 60) // 5 min
-        let claims:[Claim] = [ExpirationTimeClaim(date: Date(), leeway: timeToLive), SubjectClaim(string: userId)]
+        let timeToLive = 5 * 60.0 // 5 minutes
+        let claims:[Claim] = [
+            ExpirationTimeClaim(date: Date().addingTimeInterval(timeToLive)),
+            SubjectClaim(string: userId)
+        ]
+        
         let payload = JSON(claims)
         let jwt = try JWT(payload: payload, signer: sig)
         

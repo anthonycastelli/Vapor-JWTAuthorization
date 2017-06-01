@@ -12,7 +12,7 @@ import AuthProvider
 import JWT
 
 final class UserController {
-    var droplet: Droplet
+    let droplet: Droplet
     init(_ droplet: Droplet) {
         self.droplet = droplet
     }
@@ -38,7 +38,7 @@ final class UserController {
         }
         
         return try JSON(node: [
-            "access_token": self.generateJWTToken(userId),
+            "access_token": try droplet.createJwtToken(String(userId)),
             "user": user
         ])
     }
@@ -56,7 +56,7 @@ final class UserController {
         }
         
         return try JSON(node: [
-            "access_token": self.generateJWTToken(userId),
+            "access_token": try droplet.createJwtToken(String(userId)),
             "user": user
         ])
     }
@@ -69,12 +69,6 @@ final class UserController {
     
     func me(request: Request) throws -> ResponseRepresentable {
         return try request.user()
-    }
-    
-    // MARK: JWT Token Generation 
-    
-    func generateJWTToken(_ userId: Int) throws -> String {
-        return try droplet.createJwtToken(String(userId))
     }
     
 }
