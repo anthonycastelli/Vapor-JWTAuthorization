@@ -9,6 +9,7 @@
 import Vapor
 import FluentProvider
 import AuthProvider
+import JWTProvider
 import JWT
 import HTTP
 
@@ -133,6 +134,30 @@ extension User: TokenAuthenticatable {
         try jwt.verifyClaims([time])
         guard let userId = jwt.payload.object?[SubjectClaim.name]?.string else { throw AuthenticationError.invalidCredentials }
         guard let user = try User.makeQuery().filter("id", userId).first() else { throw AuthenticationError.invalidCredentials }
+        return user
+    }
+}
+
+
+extension SubjectClaim: JSONInitializable {
+    public init(json: JSON) throws {
+        guard let value = try json.get(SubjectClaim.name) as String? else {
+            throw AuthenticationError.invalidCredentials
+        }
+        self.value = value
+    }
+}
+extension User: PayloadAuthenticatable {
+    typealias PayloadType = SubjectClaim
+    static func authenticate(_ payload: SubjectClaim) throws -> User {
+        let userId = payload.value
+        guard let user = try User.makeQuery()
+            .filter(idKey, userId)
+            .first()
+            else {
+                throw AuthenticationError.invalidCredentials
+        }
+        
         return user
     }
 }
