@@ -59,13 +59,15 @@ final class User: Model {
     
     init(row: Row) throws {
         username = try row.get("username")
-        password = try row.get("password")
+        
+        let passwordAsString: String = try row.get("password")
+        password = passwordAsString.makeBytes()
     }
 
     func makeRow() throws -> Row {
         var row = Row()
         try row.set("username", username)
-        try row.set("password", password)
+        try row.set("password", password.makeString())
         return row
     }
 }
@@ -189,7 +191,7 @@ extension User: JSONConvertible {
         var json = JSON()
         try json.set("id", id)
         try json.set("username", username)
-        try json.set("password", password)
+        try json.set("password", password.makeString())
         return json
     }
 }
