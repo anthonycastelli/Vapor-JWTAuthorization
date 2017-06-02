@@ -12,6 +12,10 @@ import AuthProvider
 import JWT
 
 final class UserController {
+    let droplet: Droplet
+    init(_ droplet: Droplet) {
+        self.droplet = droplet
+    }
     
     func register(request: Request) throws -> ResponseRepresentable {
         // Get our credentials
@@ -34,7 +38,7 @@ final class UserController {
         }
         
         return try JSON(node: [
-            "access_token": self.generateJWTToken(userId),
+            "access_token": try droplet.createJwtToken(String(userId)),
             "user": user
         ])
     }
@@ -52,7 +56,7 @@ final class UserController {
         }
         
         return try JSON(node: [
-            "access_token": self.generateJWTToken(userId),
+            "access_token": try droplet.createJwtToken(String(userId)),
             "user": user
         ])
     }
@@ -65,15 +69,6 @@ final class UserController {
     
     func me(request: Request) throws -> ResponseRepresentable {
         return try request.user()
-    }
-    
-    // MARK: JWT Token Generation 
-    
-    func generateJWTToken(_ userId: Int) throws -> String {
-        let time = ExpirationTimeClaim(date: Date().addingTimeInterval(60 * 5)) // 5 minutes
-        let payload: [Claim] = [time, SubjectClaim(string: "\(userId)")]
-        let jwt = try JWT(payload: JSON(payload), signer: HS256(key: "SIGNING_KEY".makeBytes()))
-        return try jwt.createToken()
     }
     
 }
